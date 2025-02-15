@@ -24,38 +24,34 @@ public class WeatherServiceTest {
     private WebClient webClient;
 
     @Mock
-    private RequestBodyUriSpec requestBodyUriSpec; // Mock WebClient.RequestBodyUriSpec
+    private RequestBodyUriSpec requestBodyUriSpec;
 
     @Mock
-    private RequestBodySpec requestBodySpec; // Mock WebClient.RequestBodySpec
+    private RequestBodySpec requestBodySpec;
 
     @Mock
-    private ResponseSpec responseSpec; // Mock WebClient.ResponseSpec
+    private ResponseSpec responseSpec;
 
     @InjectMocks
     private WeatherService weatherService;
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.openMocks(this); // Initialize mocks
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
     public void testGetWeatherSummary_Success() {
-        // Arrange
         String city = "London";
-        String mockApiResponse = "{ \"list\": [{ \"dt_txt\": \"2024-11-20 12:00:00\", \"main\": {\"temp\": 290.0}}]}"; // Mocked response
+        String mockApiResponse = "{ \"list\": [{ \"dt_txt\": \"2024-11-20 12:00:00\", \"main\": {\"temp\": 290.0}}]}";
 
-        // Using doReturn for method chaining
-        doReturn(requestBodyUriSpec).when(webClient).get(); // Mock webClient.get() to return requestBodyUriSpec
-        doReturn(requestBodySpec).when(requestBodyUriSpec).uri(anyString()); // Mock uri() to return requestBodySpec
-        doReturn(responseSpec).when(requestBodySpec).retrieve(); // Mock retrieve() to return responseSpec
-        doReturn(Mono.just(mockApiResponse)).when(responseSpec).bodyToMono(String.class); // Mock bodyToMono() to return mockApiResponse
+        doReturn(requestBodyUriSpec).when(webClient).get();
+        doReturn(requestBodySpec).when(requestBodyUriSpec).uri(anyString());
+        doReturn(responseSpec).when(requestBodySpec).retrieve();
+        doReturn(Mono.just(mockApiResponse)).when(responseSpec).bodyToMono(String.class);
 
-        // Act
         WeatherResponse weatherResponse = weatherService.getWeatherSummary(city).join();
 
-        // Assert
         assertNotNull(weatherResponse);
         assertEquals(city, weatherResponse.getCity());
         assertTrue(weatherResponse.getAverageTemperature() > 0);
@@ -63,28 +59,24 @@ public class WeatherServiceTest {
 
     @Test
     public void testGetWeatherSummary_CityNotFound() {
-        // Arrange
         String city = "InvalidCity";
         doReturn(requestBodyUriSpec).when(webClient).get();
         doReturn(requestBodySpec).when(requestBodyUriSpec).uri(anyString());
         doReturn(responseSpec).when(requestBodySpec).retrieve();
         doReturn(Mono.error(new CityNotFoundException("City not found"))).when(responseSpec).bodyToMono(String.class);
 
-        // Act & Assert
         Exception exception = assertThrows(CityNotFoundException.class, () -> weatherService.getWeatherSummary(city).join());
         assertEquals("City not found", exception.getMessage());
     }
 
     @Test
     public void testGetWeatherSummary_ApiUnavailable() {
-        // Arrange
         String city = "London";
         doReturn(requestBodyUriSpec).when(webClient).get();
         doReturn(requestBodySpec).when(requestBodyUriSpec).uri(anyString());
         doReturn(responseSpec).when(requestBodySpec).retrieve();
         doReturn(Mono.error(new ApiUnavailableException("API Unavailable"))).when(responseSpec).bodyToMono(String.class);
 
-        // Act & Assert
         Exception exception = assertThrows(ApiUnavailableException.class, () -> weatherService.getWeatherSummary(city).join());
         assertEquals("API Unavailable", exception.getMessage());
     }

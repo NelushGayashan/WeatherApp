@@ -28,7 +28,7 @@ public class WeatherService {
         this.apiKey = apiKey;
     }
 
-    @Cacheable(value = "weatherCache", key = "#city", unless = "#result == null") // ✅ Cache at the correct layer
+    @Cacheable(value = "weatherCache", key = "#city", unless = "#result == null")
     public CompletableFuture<WeatherResponse> getWeatherSummary(String city) {
         return fetchWeatherData(city)
                 .thenApply(data -> WeatherMapper.mapToWeatherResponse(city, (List<Map<String, Object>>) data.get("list")));

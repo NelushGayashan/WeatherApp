@@ -20,7 +20,7 @@ public class WeatherMapper {
             Map<String, Object> main = (Map<String, Object>) item.get("main");
             String date = (String) item.get("dt_txt");
 
-            double tempKelvin = ((Number) main.get("temp")).doubleValue(); // Convert to double
+            double tempKelvin = ((Number) main.get("temp")).doubleValue();
             double tempCelsius = WeatherUtils.kelvinToCelsius(tempKelvin);
 
             weatherDataList.add(new WeatherData(parseDate(date), tempCelsius));
