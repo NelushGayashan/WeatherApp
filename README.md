@@ -75,10 +75,30 @@ Ensure you have the following installed:
 git clone https://github.com/NelushGayashan/WeatherApp.git
 cd WeatherApp
 ```
-2. **Configure your API key in application.properties**:
-```bash
-weather.api.key=your_openweathermap_api_key
-```
+2. **Configure the OpenWeatherMap API key**: To use the weather API, you need to set your OpenWeatherMap API key as an environment variable.
+
+#### Steps:
+1. Obtain your API key from [OpenWeatherMap](https://openweathermap.org/).
+
+2. Set the API key as an environment variable on your system:
+
+   - On **Linux/macOS**:
+     ```bash
+     export WEATHER_API_KEY=your_openweathermap_api_key
+     ```
+
+   - On **Windows (Command Prompt)**:
+     ```cmd
+     set WEATHER_API_KEY=your_openweathermap_api_key
+     ```
+
+   - On **Windows (PowerShell)**:
+     ```powershell
+     $env:WEATHER_API_KEY="your_openweathermap_api_key"
+     ```
+
+3. The application will automatically use this environment variable to access the API key. Make sure to replace `your_openweathermap_api_key` with the actual key you received.
+
 3. **Build and run the application**:
 ```bash
 mvn clean install
